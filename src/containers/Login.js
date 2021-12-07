@@ -1,10 +1,17 @@
-
-import { ROUTES_PATH } from '../constants/routes.js'
+import {
+  ROUTES_PATH
+} from '../constants/routes.js'
 export let PREVIOUS_LOCATION = ''
 
 // we use a class so as to test its methods in e2e tests
 export default class Login {
-  constructor({ document, localStorage, onNavigate, PREVIOUS_LOCATION, firestore }) {
+  constructor({
+    document,
+    localStorage,
+    onNavigate,
+    PREVIOUS_LOCATION,
+    firestore
+  }) {
     this.document = document
     this.localStorage = localStorage
     this.onNavigate = onNavigate
@@ -29,7 +36,7 @@ export default class Login {
     this.onNavigate(ROUTES_PATH['Bills'])
     this.PREVIOUS_LOCATION = ROUTES_PATH['Bills']
     PREVIOUS_LOCATION = this.PREVIOUS_LOCATION
-    this.document.body.style.backgroundColor="#fff"
+    this.document.body.style.backgroundColor = "#fff"
   }
 
   handleSubmitAdmin = e => {
@@ -46,24 +53,24 @@ export default class Login {
     this.onNavigate(ROUTES_PATH['Dashboard'])
     this.PREVIOUS_LOCATION = ROUTES_PATH['Dashboard']
     PREVIOUS_LOCATION = this.PREVIOUS_LOCATION
-    document.body.style.backgroundColor="#fff"
+    document.body.style.backgroundColor = "#fff"
   }
 
   // not need to cover this function by tests
   checkIfUserExists = (user) => {
     if (this.firestore) {
       this.firestore
-      .user(user.email)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          console.log(`User with ${user.email} exists`)
-          return true
-        } else {
-          return false
-        }
-      })
-      .catch(error => error)
+        .user(user.email)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            console.log(`User with ${user.email} exists`)
+            return true
+          } else {
+            return false
+          }
+        })
+        .catch(error => error)
     } else {
       return null
     }
@@ -73,16 +80,16 @@ export default class Login {
   createUser = (user) => {
     if (this.firestore) {
       this.firestore
-      .users()
-      .doc(user.email)
-      .set({
-        type: user.type,
-        name: user.email.split('@')[0] 
-      })
-      .then(() => console.log(`User with ${user.email} is created`))
-      .catch(error => error)
+        .users()
+        .doc(user.email)
+        .set({
+          type: user.type,
+          name: user.email.split('@')[0]
+        })
+        .then(() => console.log(`User with ${user.email} is created`))
+        .catch(error => error)
     } else {
       return null
     }
   }
-} 
+}

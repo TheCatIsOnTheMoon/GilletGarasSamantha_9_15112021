@@ -1,9 +1,15 @@
-
-import { ROUTES_PATH } from '../constants/routes.js'
+import {
+  ROUTES_PATH
+} from '../constants/routes.js'
 import Logout from "./Logout.js"
 
 export default class NewBill {
-  constructor({ document, onNavigate, firestore, localStorage }) {
+  constructor({
+    document,
+    onNavigate,
+    firestore,
+    localStorage
+  }) {
     this.document = document
     this.onNavigate = onNavigate
     this.firestore = firestore
@@ -13,12 +19,35 @@ export default class NewBill {
     file.addEventListener("change", this.handleChangeFile)
     this.fileUrl = null
     this.fileName = null
-    new Logout({ document, localStorage, onNavigate })
+    new Logout({
+      document,
+      localStorage,
+      onNavigate
+    })
   }
   handleChangeFile = e => {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
-    const fileName = filePath[filePath.length-1]
+    const fileName = filePath[filePath.length - 1]
+
+
+    // #3 [Bug Hunt] - Bills]---------------------------------------------------------------------------------------------------------
+
+    const fileExtention = fileName.split('.').pop();
+
+    alert(fileExtention)
+
+    if (["jpg", "jpeg", "png"].includes(fileExtention.toLowerCase()) === false) {
+
+      alert(" Wrong file type. Accepted files extentions are .jpg, .jpeg or .png only ");
+      // PROBLEMES : il me lance l'alerte meme quand mon fichier est au bon format 
+      // + ca n'empeche pas de creer l'entree
+
+      this.fileUrl = null
+      this.fileName = fileName // ??? .... ne fonctionne pas du tout evidement ca peut pas etre si simple...
+    }
+    // --------------------------------------------------------------------------------------------------------------
+
     this.firestore
       .storage
       .ref(`justificatifs/${fileName}`)
@@ -36,9 +65,9 @@ export default class NewBill {
     const bill = {
       email,
       type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
-      name:  e.target.querySelector(`input[data-testid="expense-name"]`).value,
+      name: e.target.querySelector(`input[data-testid="expense-name"]`).value,
       amount: parseInt(e.target.querySelector(`input[data-testid="amount"]`).value),
-      date:  e.target.querySelector(`input[data-testid="datepicker"]`).value,
+      date: e.target.querySelector(`input[data-testid="datepicker"]`).value,
       vat: e.target.querySelector(`input[data-testid="vat"]`).value,
       pct: parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) || 20,
       commentary: e.target.querySelector(`textarea[data-testid="commentary"]`).value,
@@ -54,12 +83,12 @@ export default class NewBill {
   createBill = (bill) => {
     if (this.firestore) {
       this.firestore
-      .bills()
-      .add(bill)
-      .then(() => {
-        this.onNavigate(ROUTES_PATH['Bills'])
-      })
-      .catch(error => error)
+        .bills()
+        .add(bill)
+        .then(() => {
+          this.onNavigate(ROUTES_PATH['Bills'])
+        })
+        .catch(error => error)
     }
   }
 }
