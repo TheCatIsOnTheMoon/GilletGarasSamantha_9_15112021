@@ -186,6 +186,11 @@ export default class {
   }
 
   // not need to cover this function by tests
+
+  // NOTE : use /* istanbul ignore next */ to prevent that portion of code to be taken 
+  //       into account when determining the amount of total code that has been tested.
+
+  /* istanbul ignore next */
   getBillsAllUsers = () => {
     if (this.firestore) {
       return this.firestore
@@ -206,6 +211,7 @@ export default class {
   }
 
   // not need to cover this function by tests
+  /* istanbul ignore next */
   updateBill = (bill) => {
     if (this.firestore) {
       return this.firestore
