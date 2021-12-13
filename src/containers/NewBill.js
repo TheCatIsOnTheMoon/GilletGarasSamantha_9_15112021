@@ -26,6 +26,7 @@ export default class NewBill {
     })
   }
   handleChangeFile = e => {
+
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length - 1]
@@ -35,29 +36,33 @@ export default class NewBill {
 
     const fileExtention = fileName.split('.').pop();
 
-    alert(fileExtention)
+    console.log(fileExtention)
 
-    if (["jpg", "jpeg", "png"].includes(fileExtention.toLowerCase()) === false) {
+    if (["jpg", "jpeg", "png"].includes(fileExtention)) {
 
-      alert(" Wrong file type. Accepted files extentions are .jpg, .jpeg or .png only ");
-      // PROBLEMES : il me lance l'alerte meme quand mon fichier est au bon format 
-      // + ca n'empeche pas de creer l'entree
-
-      this.fileUrl = null
-      this.fileName = fileName // ??? .... ne fonctionne pas du tout evidement ca peut pas etre si simple...
+      this.firestore
+        .storage
+        .ref(`justificatifs/${fileName}`)
+        .put(file)
+        .then(snapshot => snapshot.ref.getDownloadURL())
+        .then(url => {
+          this.fileUrl = url
+          this.fileName = fileName
+        })
+      return true
     }
-    // --------------------------------------------------------------------------------------------------------------
 
-    this.firestore
-      .storage
-      .ref(`justificatifs/${fileName}`)
-      .put(file)
-      .then(snapshot => snapshot.ref.getDownloadURL())
-      .then(url => {
-        this.fileUrl = url
-        this.fileName = fileName
-      })
+    alert(" Wrong file type. Accepted files extentions are .jpg, .jpeg or .png only ");
+
+    this.fileUrl = null;
+    this.fileName = null;
+    e.target.value = '';
+
+    // --------------------------------------------------------------------------------------------------------------
   }
+
+
+
   handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
