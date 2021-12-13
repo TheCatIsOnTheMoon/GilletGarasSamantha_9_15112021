@@ -20,8 +20,9 @@ const row = (bill) => {
 }
 
 const rows = (data) => {
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
-}
+  return data && data.length ? data.map((bill) => row(bill)).join("") : "";
+};
+
 
 export default ({
   data: bills,
@@ -52,20 +53,14 @@ export default ({
     return ErrorPage(error)
   }
 
-
-  // #1 [Bug report] - Bills - partie 1 dans /containers/Dashboard.js, ligne 39 ----------------------------------------------------------------------------------------------------------------------
+  // #1 [Bug report] -------------------------------------------------------------------------------------------------
   //https://stackoverflow.com/questions/10123953/how-to-sort-an-object-array-by-date-property
 
   if (bills) {
-
     bills.sort(function (a, b) {
-
       return new Date(b.date) - new Date(a.date);
-
     });
-
   }
-  // OK ! Fonctionne !...ha non ...
 
   // ----------------------------------------------------------------------------------------------------------------------
 

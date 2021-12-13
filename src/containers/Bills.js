@@ -1,9 +1,19 @@
-import { ROUTES_PATH } from '../constants/routes.js'
-import { formatDate, formatStatus } from "../app/format.js"
+import {
+  ROUTES_PATH
+} from '../constants/routes.js'
+import {
+  formatDate,
+  formatStatus
+} from "../app/format.js"
 import Logout from "./Logout.js"
 
 export default class {
-  constructor({ document, onNavigate, firestore, localStorage }) {
+  constructor({
+    document,
+    onNavigate,
+    firestore,
+    localStorage
+  }) {
     this.document = document
     this.onNavigate = onNavigate
     this.firestore = firestore
@@ -13,7 +23,11 @@ export default class {
     if (iconEye) iconEye.forEach(icon => {
       icon.addEventListener('click', (e) => this.handleClickIconEye(icon))
     })
-    new Logout({ document, localStorage, onNavigate })
+    new Logout({
+      document,
+      localStorage,
+      onNavigate
+    })
   }
 
   handleClickNewBill = e => {
@@ -34,33 +48,43 @@ export default class {
       JSON.parse(localStorage.getItem('user')).email : ""
     if (this.firestore) {
       return this.firestore
-      .bills()
-      .get()
-      .then(snapshot => {
-        const bills = snapshot.docs
-          .map(doc => {
-            try {
-              return {
-                ...doc.data(),
-                date: formatDate(doc.data().date),
-                status: formatStatus(doc.data().status)
+        .bills()
+        .get()
+        .then(snapshot => {
+          const bills = snapshot.docs
+            .map(doc => {
+              try {
+                return {
+                  ...doc.data(),
+                  date: formatDate(doc.data().date),
+                  status: formatStatus(doc.data().status)
+                }
+              } catch (e) {
+                // if for some reason, corrupted data was introduced, we manage here failing formatDate function
+                // log the error and return unformatted date in that case
+                console.log(e, 'for', doc.data())
+                return {
+                  ...doc.data(),
+                  date: doc.data().date,
+                  status: formatStatus(doc.data().status)
+                }
               }
-            } catch(e) {
-              // if for some reason, corrupted data was introduced, we manage here failing formatDate function
-              // log the error and return unformatted date in that case
-              console.log(e,'for',doc.data())
-              return {
-                ...doc.data(),
-                date: doc.data().date,
-                status: formatStatus(doc.data().status)
-              }
-            }
-          })
-          .filter(bill => bill.email === userEmail)
-          console.log('length', bills.length)
-        return bills
-      })
-      .catch(error => error)
+            })
+            .filter(bill => bill.email === userEmail)
+
+            // #1 [Bug report] -------------------------------------------------------------------------------------------------
+            //https://stackoverflow.com/questions/10123953/how-to-sort-an-object-array-by-date-property
+
+            .sort((a, b) => {
+              return new Date(b.date) - new Date(a.date)
+            })
+
+
+          // console.log('length', bills.length)
+
+          return bills
+        })
+        .catch(error => error)
     }
   }
 }
