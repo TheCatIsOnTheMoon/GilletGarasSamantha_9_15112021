@@ -174,9 +174,14 @@ export default class {
 
     // #4 [[Bug Hunt] - Dashboard]----------------------------------------------------------------------------------------------
 
+    //https://api.jquery.com/closest/
 
     bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      $(`#open-bill${bill.id}`).click((e) => {
+        if (e.target.closest(`#status-bills-container${index}`)) {
+          this.handleEditTicket(e, bill, bills)
+        }
+      })
     })
 
     return bills
