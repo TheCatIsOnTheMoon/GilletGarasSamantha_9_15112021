@@ -61,11 +61,11 @@ export default ({ data: bills, loading, error }) => {
   // #1 [Bug report] -------------------------------------------------------------------------------------------------
   //https://stackoverflow.com/questions/10123953/how-to-sort-an-object-array-by-date-property
 
-  // if (bills) {
-  //   bills.sort(function (a, b) {
-  //     return new Date(b.date) - new Date(a.date);
-  //   });
-  // }
+  if (bills) {
+    bills.sort(function (a, b) {
+      return new Date(b.date) - new Date(a.date);
+    });
+  }
 
   // ----------------------------------------------------------------------------------------------------------------------
 
