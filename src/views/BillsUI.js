@@ -19,19 +19,23 @@ const row = (bill) => {
     `;
 };
 
-const rows = (data) => {
-  return data && data.length ? data.map((bill) => row(bill)).join("") : "";
-};
+//old code
+// const rows = (data) => {
+//   return data && data.length ? data.map((bill) => row(bill)).join("") : "";
+// };
 
 // #1 [Bug report] -------------------------------------------------------------------------------------------------
 //https://stackoverflow.com/questions/10123953/how-to-sort-an-object-array-by-date-property
-// const rows = (data) =>
-//   data && data.length
-//     ? data
-//         .sort((a, b) => new Date(b.date) - new Date(a.date))
-//         .map((bill) => row(bill))
-//         .join("")
-//     : "";
+
+const rows = (data) => {
+  return data && data.length
+    ? data
+        .sort((a, b) => (a.date < b.date ? 1 : -1))
+        .map((bill) => row(bill))
+        .join("")
+    : "";
+};
+
 //------------------------------------------------------------------------------------------------
 
 export default ({ data: bills, loading, error }) => {
@@ -58,14 +62,14 @@ export default ({ data: bills, loading, error }) => {
     return ErrorPage(error);
   }
 
-  // #1 [Bug report] -------------------------------------------------------------------------------------------------
+  // #1 [Bug report] TEST -------------------------------------------------------------------------------------------------
   //https://stackoverflow.com/questions/10123953/how-to-sort-an-object-array-by-date-property
 
-  if (bills) {
-    bills.sort(function (a, b) {
-      return new Date(b.date) - new Date(a.date);
-    });
-  }
+  // if (bills) {
+  //   bills.sort(function (a, b) {
+  //     return new Date(b.date) - new Date(a.date);
+  //   });
+  // }
 
   // ----------------------------------------------------------------------------------------------------------------------
 
